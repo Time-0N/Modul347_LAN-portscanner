@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Frontend.iml" filepath="$PROJECT_DIR$/Frontend.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/Modul347_LAN-portscanner.iml" filepath="$PROJECT_DIR$/.idea/Modul347_LAN-portscanner.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PythonAPI/PythonAPI.iml" filepath="$PROJECT_DIR$/PythonAPI/PythonAPI.iml" />
     </modules>
   </component>
 </project>
