@@ -15,7 +15,9 @@ public class ApiScanControllerImpl implements ApiScanController {
 
     private final ApiService apiService;
 
-    public ApiScanControllerImpl(ApiService apiService) {
+    public ApiScanControllerImpl(
+            ApiService apiService
+    ) {
         this.apiService = apiService;
     }
 

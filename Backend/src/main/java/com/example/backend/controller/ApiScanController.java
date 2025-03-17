@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface ApiScanController {
-	public ResponseEntity<String> scanIps(@RequestParam String subnet);
+	ResponseEntity<String> scanIps(@RequestParam String subnet);
 
-	public ResponseEntity<CompletableFuture<String>> fullScan(@PathVariable Long ipId);
+	ResponseEntity<CompletableFuture<String>> fullScan(@PathVariable Long ipId);
 
-	public ResponseEntity<List<IpAddress>> listAllIps();
+	ResponseEntity<List<IpAddress>> listAllIps();
 
-	public ResponseEntity<List<DeviceInfo>> getDeviceInfo(@PathVariable Long ipId);
+	ResponseEntity<List<DeviceInfo>> getDeviceInfo(@PathVariable Long ipId);
 }
