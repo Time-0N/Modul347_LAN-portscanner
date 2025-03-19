@@ -1,40 +1,20 @@
 package com.example.backend.controller;
 
-import com.example.backend.service.ApiService;
 import com.example.backend.model.DeviceInfo;
 import com.example.backend.model.IpAddress;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-@RestController
-@RequestMapping("/api")
-public class ApiScanController {
+public interface ApiScanController {
+	ResponseEntity<String> scanIps(@RequestParam String subnet);
 
-    private final ApiService apiService;
+	ResponseEntity<CompletableFuture<String>> fullScan(@PathVariable Long ipId);
 
-    public ApiScanController(ApiService apiService) {
-        this.apiService = apiService;
-    }
+	ResponseEntity<List<IpAddress>> listAllIps();
 
-    @GetMapping("/scan-ips")
-    public String scanIps(@RequestParam String subnet) {
-        return apiService.scanIps(subnet);
-    }
-
-    @GetMapping("/full-scan/{ipId}")
-    public CompletableFuture<String> fullScan(@PathVariable Long ipId) {
-        return apiService.fullScan(ipId);
-    }
-
-    @GetMapping("/list-ips")
-    public List<IpAddress> listAllIps() {
-        return apiService.listAllIps();
-    }
-
-    @GetMapping("/device-info/{ipId}")
-    public List<DeviceInfo> getDeviceInfo(@PathVariable Long ipId) {
-        return apiService.getDeviceInfoForIp(ipId);
-    }
+	ResponseEntity<List<DeviceInfo>> getDeviceInfo(@PathVariable Long ipId);
 }
