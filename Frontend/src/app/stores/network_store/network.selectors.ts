@@ -1,10 +1,9 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { NetworkState } from './network.reducer';
-import {state} from '@angular/animations';
 
 export const selectNetworkState = createFeatureSelector<NetworkState>('network');
 
-export const selectNetwork = createSelector(
+export const selectNetworks = createSelector(
   selectNetworkState,
   (state) => state.networks
 );

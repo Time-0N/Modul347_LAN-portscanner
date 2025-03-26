@@ -13,6 +13,6 @@ export class OverviewService {
   constructor(private http: HttpClient) { }
 
   getNetworks(): Observable<Network[]> {
-    return this.http.get<Network[]>(`${this.api}/getStoredNetworks`);
+    return this.http.get<Network[]>(`${this.api}/api/getStoredNetworks`);
   }
 }

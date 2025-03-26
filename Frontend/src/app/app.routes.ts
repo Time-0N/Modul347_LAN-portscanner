@@ -1,14 +1,17 @@
-import {RouterModule, Routes} from '@angular/router';
+import { Routes } from '@angular/router';
 import { OverviewComponent } from './components/overview/overview_component/overview.component';
-import {NgModule} from '@angular/core';
 
 export const routes: Routes = [
-  { path: 'overview', component: OverviewComponent },
-  { path: '', redirectTo: '/overview', pathMatch: 'full' }
+  {
+    path: '',
+    component: OverviewComponent
+  },
+  {
+    path: 'overview',
+    component: OverviewComponent
+  },
+  {
+    path: '**',
+    redirectTo: ''
+  }
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule { }
