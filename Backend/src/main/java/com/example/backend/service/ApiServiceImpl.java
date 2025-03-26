@@ -103,4 +103,10 @@ public class ApiServiceImpl implements ApiService {
     public List<DeviceInfo> getDeviceInfoForIp(Long ipId) {
         return deviceRepo.findByIpAddressId(ipId);
     }
+
+    @Override
+    public List<Network> getAllNetworks() {
+        return networkRepo.findAll();
+    }
+
 }
