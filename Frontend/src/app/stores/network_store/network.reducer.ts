@@ -1,7 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import { loadNetwork, loadNetworkSuccess, loadNetworkFailure } from './network.actions';
 import { Network } from '../../models/network';
-import {state} from '@angular/animations';
 
 export interface NetworkState {
   networks: Network[];

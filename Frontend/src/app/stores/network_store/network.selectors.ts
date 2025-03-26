@@ -6,7 +6,7 @@ export const selectNetworkState = createFeatureSelector<NetworkState>('network')
 
 export const selectNetwork = createSelector(
   selectNetworkState,
-  (state) => state.network
+  (state) => state.networks
 );
 
 export const selectLoading = createSelector(
