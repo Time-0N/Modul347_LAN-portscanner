@@ -6,19 +6,32 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Navigate to the project directory
 cd "$SCRIPT_DIR" || exit 1
 
-# Check if virtual environment exists
-if [ -d ".venv" ]; then
+# Check if virtual environment exists, if not, create it
+if [ ! -d ".venv" ]; then
+    echo "⚙️  Virtual environment not found. Setting up .venv..."
+    python3 -m venv .venv
     source .venv/bin/activate
+
+    # Install dependencies if requirements.txt exists
+    if [ -f "requirements.txt" ]; then
+        echo "📦 Installing dependencies from requirements.txt..."
+        pip install -r requirements.txt
+    else
+        echo "⚠️ No requirements.txt found. Installing Uvicorn manually..."
+        pip install fastapi uvicorn
+    fi
+
+    echo "✅ Virtual environment setup complete!"
 else
-    echo "❌ Virtual environment (.venv) not found!"
-    exit 1
+    # Activate the virtual environment
+    source .venv/bin/activate
 fi
 
 # Find Uvicorn inside the virtual environment
 UVICORN_PATH="$(which uvicorn)"
 if [ -z "$UVICORN_PATH" ]; then
-    echo "❌ Uvicorn not found! Make sure it's installed in your virtual environment."
-    exit 1
+    echo "❌ Uvicorn not found! Installing it..."
+    pip install uvicorn
 fi
 
 # Run Uvicorn with sudo
