@@ -22,7 +22,7 @@ fi
 echo "Starting new PostgreSQL container..."
 docker run -d \
     --name "$POSTGRES_CONTAINER_NAME" \
-    --network host \
+    -p 5432:5432 \
     -e "POSTGRES_USER=$POSTGRES_USER" \
     -e "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" \
     -e "POSTGRES_DB=$POSTGRES_DB" \
