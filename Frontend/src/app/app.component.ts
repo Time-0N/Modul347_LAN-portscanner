@@ -3,10 +3,14 @@ import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  imports: [RouterOutlet],
 })
 export class AppComponent {
-  title = 'Frontend';
+  title = "port-scanner";
+
+  constructor() {
+    console.log("app-root loaded");
+  }
 }
