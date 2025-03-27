@@ -1,17 +1,14 @@
 import { Routes } from '@angular/router';
-import { OverviewComponent } from './components/overview/overview_component/overview.component';
+import {DummyComponent} from './pages/dummy/dummy_component/dummy/dummy.component';
 
 export const routes: Routes = [
   {
     path: '',
-    component: OverviewComponent
+    pathMatch: 'full',
+    component: DummyComponent
   },
   {
     path: 'overview',
-    component: OverviewComponent
-  },
-  {
-    path: '**',
-    redirectTo: ''
+    loadChildren: () => import('./pages/overview/overview-routing').then(mod => mod.routes)
   }
 ];
