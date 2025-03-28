@@ -13,6 +13,8 @@ export class NetworkScanService {
   constructor(private http: HttpClient) { }
 
   scanIp(ip: string): Observable<Network> {
-    return this.http.get<Network>(`${this.api}/api/scanIps/${ip}`);
+    return this.http.get<Network>(`${this.api}/api/scan-ips`, {
+      params: { subnet: ip }
+    });
   }
 }
