@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface ApiService {
-	String scanIps(String subnet);
+	Network scanIps(String subnet);
 
 	CompletableFuture<String> fullScan(Long ipId);
 

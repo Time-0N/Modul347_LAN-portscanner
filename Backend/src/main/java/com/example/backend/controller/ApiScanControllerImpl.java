@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import com.example.backend.model.Network;
 import com.example.backend.service.ApiService;
 import com.example.backend.model.DeviceInfo;
 import com.example.backend.model.IpAddress;
@@ -23,7 +24,7 @@ public class ApiScanControllerImpl implements ApiScanController {
 
     @Override
     @GetMapping("/scan-ips")
-    public ResponseEntity<String> scanIps(@RequestParam String subnet) {
+    public ResponseEntity<Network> scanIps(@RequestParam String subnet) {
         return ResponseEntity.ok(apiService.scanIps(subnet));
     }
 

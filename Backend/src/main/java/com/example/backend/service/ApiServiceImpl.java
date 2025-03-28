@@ -36,7 +36,7 @@ public class ApiServiceImpl implements ApiService {
     }
 
     @Override
-    public String scanIps(String subnet) {
+    public Network scanIps(String subnet) {
         String apiUrl = UriComponentsBuilder.fromHttpUrl("http://127.0.0.1:8000/scan")
                 .queryParam("subnet", subnet)
                 .toUriString();
@@ -45,7 +45,8 @@ public class ApiServiceImpl implements ApiService {
         List<Map<String, String>> devices = response.get("devices");
 
         if (devices == null || devices.isEmpty()) {
-            return "Keine Geräte gefunden im Subnetz: " + subnet;
+            //Needs better logic here! Maybe throw error and handle instead?
+            return new Network();
         }
 
         Network network = networkRepo.findBySubnet(subnet).orElseGet(() -> {
@@ -66,7 +67,7 @@ public class ApiServiceImpl implements ApiService {
                         return ipRepo.save(newIp);
                     });
         }
-        return "IP Scan für Subnet" + subnet;
+        return network;
     }
 
     @Async

@@ -10,3 +10,21 @@ export const loadNetworkSuccess =
     networks: Network[]
   }>()
 );
+
+export const scanIp =
+  createAction(`${actionName} scan IP`, props< {
+    ip: string
+  }>()
+);
+
+export const scanIpSuccess =
+  createAction(`${actionName} scan IP success`, props< {
+    network: Network
+  }>()
+);
+
+export const scanIpFailure =
+  createAction(`${actionName} scan IP failure`, props< {
+    error: any
+  }>()
+);
