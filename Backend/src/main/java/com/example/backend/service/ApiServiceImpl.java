@@ -45,30 +45,33 @@ public class ApiServiceImpl implements ApiService {
         List<Map<String, String>> devices = response.get("devices");
 
         if (devices == null || devices.isEmpty()) {
-            //Needs better logic here! Maybe throw error and handle instead?
             return new Network();
         }
 
-        Network network = networkRepo.findBySubnet(subnet).orElseGet(() -> {
-            Network newNetwork = new Network();
-            newNetwork.setSubnet(subnet);
-            return networkRepo.save(newNetwork);
-        });
+        Network network;
+        Optional<Network> existingNetwork = networkRepo.findBySubnet(subnet);
+        if (existingNetwork.isPresent()) {
+            network = existingNetwork.get();
+            List<IpAddress> existingIps = ipRepo.findByNetworkId(network.getId());
+            for (IpAddress ip : existingIps) {
+                ipRepo.delete(ip);
+            }
+        } else {
+            network = new Network();
+            network.setSubnet(subnet);
+            network = networkRepo.save(network);
+        }
 
         for (Map<String, String> device : devices) {
             String ip = device.get("ip");
-            IpAddress ipAddress = ipRepo.findByNetworkId(network.getId()).stream()
-                    .filter(i -> i.getIp().equals(ip))
-                    .findFirst()
-                    .orElseGet(() -> {
-                        IpAddress newIp = new IpAddress();
-                        newIp.setIp(ip);
-                        newIp.setNetwork(network);
-                        return ipRepo.save(newIp);
-                    });
+            IpAddress newIp = new IpAddress();
+            newIp.setIp(ip);
+            newIp.setNetwork(network);
+            ipRepo.save(newIp);
         }
         return network;
     }
+
 
     @Async
     @Override
@@ -109,5 +112,16 @@ public class ApiServiceImpl implements ApiService {
     public List<Network> getAllNetworks() {
         return networkRepo.findAll();
     }
+    public Network updateNetworkName(Long networkId, String name) {
+        Optional<Network> networkOpt = networkRepo.findById(networkId);
+        if (networkOpt.isPresent()) {
+            Network network = networkOpt.get();
+            network.setName(name);
+            return networkRepo.save(network);
+        }
+        throw new RuntimeException("Network not found with id " + networkId);
+    }
+
+
 
 }

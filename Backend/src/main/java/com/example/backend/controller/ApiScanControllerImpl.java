@@ -1,9 +1,9 @@
 package com.example.backend.controller;
 
-import com.example.backend.model.Network;
-import com.example.backend.service.ApiService;
 import com.example.backend.model.DeviceInfo;
 import com.example.backend.model.IpAddress;
+import com.example.backend.model.Network;
+import com.example.backend.service.ApiService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,19 +16,15 @@ public class ApiScanControllerImpl implements ApiScanController {
 
     private final ApiService apiService;
 
-    public ApiScanControllerImpl(
-            ApiService apiService
-    ) {
+    public ApiScanControllerImpl(ApiService apiService) {
         this.apiService = apiService;
     }
 
-    @Override
     @GetMapping("/scan-ips")
     public ResponseEntity<Network> scanIps(@RequestParam String subnet) {
         return ResponseEntity.ok(apiService.scanIps(subnet));
     }
 
-    @Override
     @GetMapping("/full-scan/{ipId}")
     public ResponseEntity<CompletableFuture<String>> fullScan(@PathVariable Long ipId) {
         return ResponseEntity.ok(apiService.fullScan(ipId));
@@ -42,5 +38,13 @@ public class ApiScanControllerImpl implements ApiScanController {
     @GetMapping("/device-info/{ipId}")
     public ResponseEntity<List<DeviceInfo>> getDeviceInfo(@PathVariable Long ipId) {
         return ResponseEntity.ok(apiService.getDeviceInfoForIp(ipId));
+    }
+
+    // Neuer Endpunkt zum Setzen des Namens ohne DTO
+    @PostMapping("/network/{networkId}/name")
+    public ResponseEntity<Network> updateNetworkName(@PathVariable Long networkId,
+                                                     @RequestParam String name) {
+        Network updatedNetwork = apiService.updateNetworkName(networkId, name);
+        return ResponseEntity.ok(updatedNetwork);
     }
 }

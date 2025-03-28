@@ -18,4 +18,5 @@ public interface ApiService {
 
 	List<Network> getAllNetworks();
 
+	Network updateNetworkName(Long networkId, String name);
 }
