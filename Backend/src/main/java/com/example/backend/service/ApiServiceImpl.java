@@ -112,5 +112,16 @@ public class ApiServiceImpl implements ApiService {
     public List<Network> getAllNetworks() {
         return networkRepo.findAll();
     }
+    public Network updateNetworkName(Long networkId, String name) {
+        Optional<Network> networkOpt = networkRepo.findById(networkId);
+        if (networkOpt.isPresent()) {
+            Network network = networkOpt.get();
+            network.setName(name);
+            return networkRepo.save(network);
+        }
+        throw new RuntimeException("Network not found with id " + networkId);
+    }
+
+
 
 }

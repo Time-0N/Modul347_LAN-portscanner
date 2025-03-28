@@ -1,6 +1,7 @@
 package com.example.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
@@ -19,12 +20,10 @@ public class IpAddress {
     @JoinColumn(name = "network_id", nullable = false)
     private Network network;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    @Transient
+    @JsonProperty("networkName")
+    public String getNetworkName() {
+        return network != null ? network.getName() : null;
     }
 
     public String getIp() {
@@ -33,10 +32,6 @@ public class IpAddress {
 
     public void setIp(String ip) {
         this.ip = ip;
-    }
-
-    public Network getNetwork() {
-        return network;
     }
 
     public void setNetwork(Network network) {
