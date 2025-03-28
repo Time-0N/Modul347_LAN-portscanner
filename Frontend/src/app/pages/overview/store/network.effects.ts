@@ -1,7 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import {of} from 'rxjs';
-import {Network} from '../../../models/network';
+import {groupBy, of, switchMap} from 'rxjs';
 import {NetworkScanService} from '../services/network-scan.service';
 import {OverviewService} from '../services/overview.service';
 import {networkResolverExecuted, loadNetworkSuccess, scanIp, scanIpSuccess, scanIpFailure} from './network.actions';
@@ -29,10 +28,15 @@ export class NetworkEffects {
   public readonly scanIp$ = createEffect(() =>
     this.actions$.pipe(
       ofType(scanIp),
-      mergeMap(({ ip }) =>
-        this.networkScanService.scanIp(ip).pipe(
-          map((network: Network) => scanIpSuccess({ network })),
-          catchError(error => of(scanIpFailure({ error })))
+      groupBy(action => action.ip),
+      mergeMap(group$ =>
+        group$.pipe(
+          switchMap(({ ip }) =>
+            this.networkScanService.scanIp(ip).pipe(
+              map(network => scanIpSuccess({ network })),
+              catchError(error => of(scanIpFailure({ error })))
+            )
+          )
         )
       )
     )

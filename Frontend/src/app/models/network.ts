@@ -1,8 +1,8 @@
-import {IpAddress} from './ipAddress';
+import {IpAddresses} from './ip-addresses';
 
 export interface Network {
   id: number;
-  name: String;
-  subnet: String;
-  ipAddresses: IpAddress[];
+  name: string;
+  subnet: string;
+  ipAddresses: IpAddresses[];
 }

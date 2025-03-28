@@ -1,0 +1,31 @@
+<div *ngFor="let network of networks">
+
+  <div
+    (click)="toggleNetwork(network.id)"
+    >
+    {{ network.name }} ({{ network.subnet }})
+  </div>
+
+  <div *ngIf="expandedNetworkId === network.id">
+    <div
+      *ngFor="let ip of network.ipAddresses"
+      (click)="toggleIp(ip.ip)"
+      >
+      - {{ ip.ip }}
+    </div>
+
+    <div *ngFor="let ip of network.ipAddresses">
+      <ng-container *ngIf="expandedIp === ip.ip">
+        <div>
+          <div><strong>IP:</strong> {{ ip.ip }}</div>
+          <div><strong>MAC:</strong> {{ ip.deviceInfo.mac }}</div>
+          <div><strong>Hostname:</strong> {{ ip.deviceInfo.hostname }}</div>
+          <div><strong>OS:</strong> {{ ip.deviceInfo.os }}</div>
+          <div><strong>Extra:</strong> {{ ip.deviceInfo.extraInfo }}</div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+
+</div>

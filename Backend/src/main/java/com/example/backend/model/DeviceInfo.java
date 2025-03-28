@@ -1,5 +1,6 @@
 package com.example.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 
@@ -13,8 +14,9 @@ public class DeviceInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "ip_id", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "ip_id", unique = true, nullable = false)
+    @JsonBackReference
     private IpAddress ipAddress;
 
     private String mac;

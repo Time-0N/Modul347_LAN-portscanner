@@ -1,9 +1,9 @@
-import {IpAddress} from './ipAddress';
+import {IpAddresses} from './ip-addresses';
 
 export interface DeviceInfo {
-  ipAddress: IpAddress;
-  mac: String;
-  hostname: String;
-  os: String;
-  extraInfo: String;
+  ipAddress: IpAddresses;
+  mac: string;
+  hostname: string;
+  os: string;
+  extraInfo: string;
 }
