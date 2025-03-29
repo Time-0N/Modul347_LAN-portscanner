@@ -29,7 +29,18 @@ export const scanIpFailure =
   }>()
 );
 
-export const updateNetwork = createAction(
-  '[Network] Update Network',
-  props<{ updatedNetwork: Network }>()
+export const updateNetworkName =
+    createAction(`${actionName} Update Network Name`, props<{
+        network: Network, name: string
+    }>()
+);
+
+export const updateNetworkNameSuccess = createAction(
+    `${actionName} Update Network Name Success`,
+    props<{ updatedNetwork: Network }>()
+);
+
+export const updateNetworkNameFailure = createAction(
+    `${actionName} Update Network Name Failure`,
+    props<{ error: any }>()
 );

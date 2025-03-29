@@ -1,7 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
-import {loadNetworkSuccess, scanIpSuccess, updateNetwork} from './network.actions';
+import {loadNetworkSuccess, scanIpSuccess, updateNetworkNameSuccess} from './network.actions';
 import {NetworkState} from './network.state';
-import {state} from '@angular/animations';
 
 export const networkInitialState: NetworkState = {
   networkState: []
@@ -32,10 +31,10 @@ export const networkReducer = createReducer(
     };
   }),
 
-  on(updateNetwork, (state, { updatedNetwork }) => ({
+  on(updateNetworkNameSuccess, (state, { updatedNetwork }) => ({
     ...state,
     networkState: state.networkState.map(network =>
       network.id === updatedNetwork.id ? updatedNetwork : network
     )
-  }))
+  })),
 );

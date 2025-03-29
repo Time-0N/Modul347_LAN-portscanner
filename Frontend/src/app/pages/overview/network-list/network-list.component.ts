@@ -2,6 +2,9 @@ import {CommonModule, NgIf} from '@angular/common';
 import {Component, Input} from '@angular/core';
 import {Network} from '../../../models/network';
 import {FormsModule} from '@angular/forms';
+import {OverviewService} from '../services/overview.service';
+import {Store} from "@ngrx/store";
+import {updateNetworkName} from "../store/network-store/network.actions";
 
 @Component({
   selector: 'app-network-list',
@@ -21,6 +24,9 @@ export class NetworkListComponent {
   expandedNetworkId: number | null = null;
   expandedIp: string | null = null;
 
+  constructor(private readonly store: Store,) {
+  }
+
   toggleNetwork(id: number) {
     this.expandedNetworkId = this.expandedNetworkId === id ? null : id;
     this.expandedIp = null;
@@ -30,7 +36,12 @@ export class NetworkListComponent {
     this.expandedIp = this.expandedIp === ip ? null : ip;
   }
 
-  setOrUpdateNetworkName(network: Network) {
-    this.updateNetworkName(network, network.name);
+  setOrUpdateNetworkName(network: Network, newName: string) {
+    if (newName !== network.name) {
+      this.store.dispatch(updateNetworkName({
+        network,
+        name: newName
+      }))
+    }
   }
 }

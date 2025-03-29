@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {Observable, tap} from 'rxjs';
+import {Observable} from 'rxjs';
 import {Network} from '../../../models/network';
-import {updateNetwork} from '../store/network-store/network.actions';
-import {Store} from '@ngrx/store';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +12,6 @@ export class OverviewService {
 
   constructor(
     private http: HttpClient,
-    private readonly store: Store
   ) { }
 
   getNetworks(): Observable<Network[]> {
@@ -22,13 +19,9 @@ export class OverviewService {
   }
 
   setNetworkName(network: Network, name: string): Observable<Network> {
-    const headers = {
-      'Content-Type': 'application/json'
-    };
-    return this.http.post<Network>(`${this.api}/api/${network.id}/name`, { name }, { headers }).pipe(
-      tap((updatedNetwork) => {
-        this.store.dispatch(updateNetwork({ updatedNetwork }))
-      })
-    )
+    const url = `${this.api}/api/network/${network.id}/name`;
+    return this.http.post<Network>(url, { name }, {
+      headers: { 'Content-Type' : 'application/json' }
+    });
   }
 }

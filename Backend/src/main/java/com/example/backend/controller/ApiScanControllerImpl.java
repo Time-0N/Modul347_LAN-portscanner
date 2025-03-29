@@ -39,14 +39,4 @@ public class ApiScanControllerImpl implements ApiScanController {
     public ResponseEntity<List<DeviceInfo>> getDeviceInfo(@PathVariable Long ipId) {
         return ResponseEntity.ok(apiService.getDeviceInfoForIp(ipId));
     }
-
-    @Override
-    @PostMapping("/network/{networkId}/name")
-    public ResponseEntity<Network> updateNetworkName(
-            @PathVariable Long networkId,
-            @RequestParam String name
-    ) {
-        Network updatedNetwork = apiService.updateNetworkName(networkId, name);
-        return ResponseEntity.ok(updatedNetwork);
-    }
 }
