@@ -39,4 +39,6 @@ public class Network {
         return name;
     }
 
+    public String getSubnet() {return subnet;}
+
 }

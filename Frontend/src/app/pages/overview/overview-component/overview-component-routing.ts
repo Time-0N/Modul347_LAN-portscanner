@@ -1,15 +1,15 @@
 import {Routes} from '@angular/router';
 import {provideEffects} from '@ngrx/effects';
 import {provideState} from '@ngrx/store';
-import {resolveNetworkDataConfiguration} from '../../../overview/services/network-data-resolve.service';
-import {NetworkEffects} from '../../../overview/store/network.effects';
-import {networkFeatureName, networkReducer} from '../../../overview/store/network.reducer';
-import {NetworkOverviewComponent} from './network-overview.component';
+import {NetworkEffects} from '../store/network-store/network.effects';
+import {OverviewComponent} from './overview.component';
+import {resolveNetworkDataConfiguration} from '../services/network-data-resolve.service';
+import {networkFeatureName, networkReducer} from '../store/network-store/network.reducer';
 
 export const routes: Routes = [
   {
     path: '',
-    component: NetworkOverviewComponent,
+    component: OverviewComponent,
     providers: [
       provideState(networkFeatureName, networkReducer),
       provideEffects([NetworkEffects])

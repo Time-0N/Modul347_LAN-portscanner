@@ -10,9 +10,5 @@ export const routes: Routes = [
   {
     path: 'overview',
     loadChildren: () => import('./pages/overview/overview-routing').then(mod => mod.routes)
-  },
-  {
-    path: 'network-list',
-    loadChildren: () => import('./pages/network-data-view/network-data-view-routing').then(mod => mod.routes)
   }
 ];
