@@ -1,16 +1,32 @@
-<div>
-  <label for="ip">Enter IP to Scan:</label>
-  <input
-    id="ip"
-    type="text"
-    [(ngModel)]="ipToScan"
-    placeholder="e.g. 192.168.1.1/24"
-  />
-  <button (click)="onScanSubmit()">Scan IP</button>
+<div class="scan-container">
+    <div class="controls">
+        <div class="scan-control">
+            <label for="ip">Enter IP to Scan:</label>
+            <input
+                    id="ip"
+                    type="text"
+                    [(ngModel)]="ipToScan"
+                    placeholder="e.g. 192.168.1.1/24"
+            />
+            <button (click)="onScanSubmit()">Scan IP</button>
+        </div>
 
-  <ng-container *ngIf="networks$ | async as networks">
-    <app-network-list
-      [networks]="networks"
-    />
-  </ng-container>
+        <div class="search-control">
+            <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            (input)="onSearchChange()"
+            placeholder="Search network"
+            >
+        </div>
+    </div>
+
+
+    <div class="network-list-container">
+        <ng-container *ngIf="filteredNetworks$ | async as networks">
+            <app-network-list
+                    [networks]="networks"
+            />
+        </ng-container>
+    </div>
 </div>
