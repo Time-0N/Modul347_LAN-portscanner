@@ -1,17 +1,17 @@
-# Verwende ein offizielles OpenJDK-Image als Basis
-FROM openjdk:17-jdk-slim
+# Verwende OpenJDK als Basis
+FROM openjdk:21-jdk-slim
 
-# Setze das Arbeitsverzeichnis im Container
+# Setze das Arbeitsverzeichnis
 WORKDIR /app
 
 # Kopiere die JAR-Datei ins Arbeitsverzeichnis
-COPY ./target/your-backend-app.jar ./backend-app.jar
+COPY ./target/Backend-0.0.1-SNAPSHOT.jar ./Backend-0.0.1-SNAPSHOT.jar
 
-# Exponiere den Port, auf dem der Backend-Server läuft (Standard ist 8080)
+# Exponiere Port 8080
 EXPOSE 8080
 
-# Setze die Umgebungsvariable für das Spring-Profil (falls erforderlich)
+# Setze Umgebungsvariable für das Spring Profil
 ENV SPRING_PROFILES_ACTIVE=dev
 
 # Starte die Spring Boot Anwendung
-CMD ["java", "-jar", "backend-app.jar"]
+CMD ["java", "-jar", "Backend-0.0.1-SNAPSHOT.jar"]
