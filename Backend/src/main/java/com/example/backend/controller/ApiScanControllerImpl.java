@@ -40,7 +40,6 @@ public class ApiScanControllerImpl implements ApiScanController {
         return ResponseEntity.ok(apiService.getDeviceInfoForIp(ipId));
     }
 
-    // Neuer Endpunkt zum Setzen des Namens ohne DTO
     @PostMapping("/network/{networkId}/name")
     public ResponseEntity<Network> updateNetworkName(@PathVariable Long networkId,
                                                      @RequestParam String name) {

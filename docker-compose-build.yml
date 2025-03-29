@@ -27,9 +27,11 @@ services:
     build: ./Frontend
     container_name: portscanner_ui
     ports:
-      - "${FRONTEND_PORT}:3000"
+      - "4200:3000"
     depends_on:
       - backend
+    command: [ "ng", "serve", "--host", "0.0.0.0" ]
+
 
 volumes:
   postgres_data:
