@@ -18,4 +18,6 @@ public interface ApiScanController {
 	ResponseEntity<List<IpAddress>> listAllIps();
 
 	ResponseEntity<List<DeviceInfo>> getDeviceInfo(@PathVariable Long ipId);
+
+	ResponseEntity<Network> updateNetworkName(@PathVariable Long networkId, @RequestParam String name);
 }

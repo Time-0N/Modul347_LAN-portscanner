@@ -15,4 +15,11 @@ export class OverviewService {
   getNetworks(): Observable<Network[]> {
     return this.http.get<Network[]>(`${this.api}/api/getStoredNetworks`);
   }
+
+  setNetworkName(network: Network, name: string): Observable<Network> {
+    const headers = {
+      'Content-Type': 'application/json'
+    }
+    return this.http.post<Network>(`${this.api}/api/${network.id}/name`, { name:name }, headers)
+  }
 }

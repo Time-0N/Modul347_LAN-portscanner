@@ -1,30 +1,32 @@
 import {Component} from '@angular/core';
-import {AsyncPipe, JsonPipe} from '@angular/common';
 import {Store} from '@ngrx/store';
 import {scanIp} from '../store/network.actions';
 import {selectNetworks} from '../store/network.selectors';
 import {FormsModule} from '@angular/forms';
+import {NetworkListComponent} from '../network-list/network-list.component';
+import {AsyncPipe, NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-overview',
   standalone: true,
   imports: [
+    FormsModule,
+    NetworkListComponent,
     AsyncPipe,
-    JsonPipe,
-    FormsModule
+    NgIf
   ],
   templateUrl: './overview.component.html',
   styleUrl: './overview.component.css'
 })
 export class OverviewComponent {
 
-  public readonly networksData$;
+  public readonly networks$;
   ipToScan: string = '';
 
   constructor(
     private readonly store: Store,
   ) {
-    this.networksData$ = store.select(selectNetworks);
+    this.networks$ = store.select(selectNetworks);
   }
 
   onScanSubmit() {

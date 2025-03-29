@@ -8,5 +8,7 @@
   />
   <button (click)="onScanSubmit()">Scan IP</button>
 
-  <pre>{{ networksData$ | async | json }}</pre>
+  <ng-container *ngIf="networks$ | async as networks">
+    <app-network-list [networks]="networks" />
+  </ng-container>
 </div>
