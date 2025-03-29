@@ -1,6 +1,6 @@
 import {DeviceInfo} from './deviceInfo';
 
-export interface IpAddress {
-  ipAddress: String;
+export interface IpAddresses {
+  ip: string;
   deviceInfo: DeviceInfo;
 }

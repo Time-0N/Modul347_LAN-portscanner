@@ -4,7 +4,13 @@ import { RouterOutlet } from '@angular/router';
 @Component({
   selector: 'app-root',
   standalone: true,
+  templateUrl: './app.component.html',
   imports: [RouterOutlet],
-  template: `<router-outlet></router-outlet>`
 })
-export class AppComponent {}
+export class AppComponent {
+  title = "port-scanner";
+
+  constructor() {
+    console.log("app-root loaded");
+  }
+}
