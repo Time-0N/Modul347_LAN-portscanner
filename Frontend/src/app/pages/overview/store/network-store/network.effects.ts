@@ -1,8 +1,8 @@
 import {inject, Injectable} from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {groupBy, of, switchMap} from 'rxjs';
-import {NetworkScanService} from '../services/network-scan.service';
-import {OverviewService} from '../services/overview.service';
+import {NetworkScanService} from '../../services/network-scan.service';
+import {OverviewService} from '../../services/overview.service';
 import {networkResolverExecuted, loadNetworkSuccess, scanIp, scanIpSuccess, scanIpFailure} from './network.actions';
 import {catchError, map, mergeMap} from 'rxjs/operators';
 

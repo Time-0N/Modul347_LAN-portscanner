@@ -9,6 +9,9 @@
   <button (click)="onScanSubmit()">Scan IP</button>
 
   <ng-container *ngIf="networks$ | async as networks">
-    <app-network-list [networks]="networks" />
+    <app-network-list
+      [networks]="networks"
+      [updateNetworkName]="updateNetworkName"
+    />
   </ng-container>
 </div>

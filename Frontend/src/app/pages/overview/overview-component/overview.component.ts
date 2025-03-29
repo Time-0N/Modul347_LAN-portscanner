@@ -1,10 +1,11 @@
 import {Component} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {scanIp} from '../store/network.actions';
-import {selectNetworks} from '../store/network.selectors';
+import {scanIp, updateNetwork} from '../store/network-store/network.actions';
+import {selectNetworks} from '../store/network-store/network.selectors';
 import {FormsModule} from '@angular/forms';
 import {NetworkListComponent} from '../network-list/network-list.component';
 import {AsyncPipe, NgIf} from '@angular/common';
+import {Network} from '../../../models/network';
 
 @Component({
   selector: 'app-overview',
@@ -32,5 +33,11 @@ export class OverviewComponent {
   onScanSubmit() {
     if (!this.ipToScan) return;
     this.store.dispatch(scanIp({ ip: this.ipToScan }));
+  }
+
+  updateNetworkName(network: Network, name: string) {
+    if (network.name !== name) {
+      this.store.dispatch(updateNetwork({ updatedNetwork: { ...network, name } }))
+    }
   }
 }
