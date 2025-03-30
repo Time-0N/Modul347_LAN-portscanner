@@ -1,15 +1,17 @@
-## Scan IPS
+Modul347_LAN-portscanner
+Beschreibung
+Das Modul347_LAN-portscanner Projekt ist eine applikation, mit der man Netzwerke scannen, Endpunkte suchen und Geräteinformationen anzeigen kann. Über eine einfache Weboberfläche lassen sich diese Funktionen nutzen.
 
-#### curl -X GET "http://127.0.0.1:8080/api/scan-ips?subnet=172.20.10.13/28"
+API Endpunkte
+GET /api/scan-ips?subnet={subnet}: Scannt das angegebene Subnetz nach IP-Adressen.
+GET /api/full-scan/{ipId}: Führt einen vollständigen Scan für eine bestimmte IP-Adresse durch.
+GET /api/list-ips: Listet alle gescannten IP-Adressen.
+GET /api/device-info/{ipId}: Zeigt Informationen zu einem Gerät anhand der IP-Adresse.
 
-## List IPS
+Docker Compose
+Um das Projekt zu starten, benutze einfach:
 
-#### curl -X GET "http://127.0.0.1:8080/api/list-ips"
+docker-compose -f docker-compose-build.yml up --build
 
-## Full Scan
+Dies startet Backend, Frontend und die Datenbank.
 
-#### curl -X GET "http://127.0.0.1:8080/api/full-scan/1"
-
-## Device Info
-
-#### curl -X GET "http://127.0.0.1:8080/api/device-info/1"
