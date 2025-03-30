@@ -1,4 +1,4 @@
-name: Build and Push Portscanner Docker Image
+name: Build and Push All Docker Compose Services
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Docker Buildx
@@ -22,9 +22,15 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: t1me0n/modul347-portscanner:latest
+      - name: Build all images with Compose
+        run: docker-compose -f docker-compose-build.yml build
+
+      - name: Tag and push Backend image
+        run: |
+          docker tag modul347_lan-portscanner-backend yourdockerhubuser/lan-backend:latest
+          docker push t1me0n/lan-backend:latest
+
+      - name: Tag and push API image
+        run: |
+          docker tag modul347_lan-portscanner-api t1me0n/lan-api:latest
+          docker push
