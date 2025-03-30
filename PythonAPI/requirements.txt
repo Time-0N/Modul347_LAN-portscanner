@@ -13,3 +13,8 @@ speedtest==0.0.1
 starlette==0.45.3
 typing_extensions==4.12.2
 uvicorn==0.34.0
+fastapi==0.115.8
+uvicorn==0.34.0
+python-nmap==0.7.1
+scapy==2.6.1
+python-multipart==0.0.9

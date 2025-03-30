@@ -6,11 +6,18 @@ import com.example.backend.model.Network;
 import com.example.backend.repository.DeviceInfoRepository;
 import com.example.backend.repository.IpAddressRepository;
 import com.example.backend.repository.NetworkRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,83 +26,104 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class ApiServiceImpl implements ApiService {
 
+    private static final Logger logger = LoggerFactory.getLogger(ApiServiceImpl.class);
+
     private final NetworkRepository networkRepo;
     private final IpAddressRepository ipRepo;
     private final DeviceInfoRepository deviceRepo;
     private final RestTemplate restTemplate;
 
+    @Value("${python.api.base-url}")
+    private String pythonApiBaseUrl;
+
     public ApiServiceImpl(
             NetworkRepository networkRepo,
             IpAddressRepository ipRepo,
-            DeviceInfoRepository deviceRepo
+            DeviceInfoRepository deviceRepo,
+            RestTemplate restTemplate
     ) {
         this.networkRepo = networkRepo;
         this.ipRepo = ipRepo;
         this.deviceRepo = deviceRepo;
-        this.restTemplate = new RestTemplate();
+        this.restTemplate = restTemplate;
     }
 
     @Override
+    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 1000))
     public Network scanIps(String subnet) {
-        String apiUrl = UriComponentsBuilder.fromHttpUrl("http://127.0.0.1:8000/scan")
+        String apiUrl = UriComponentsBuilder.fromHttpUrl(pythonApiBaseUrl + "/scan")
                 .queryParam("subnet", subnet)
                 .toUriString();
 
-        Map<String, List<Map<String, String>>> response = restTemplate.getForObject(apiUrl, Map.class);
-        List<Map<String, String>> devices = response.get("devices");
+        logger.debug("Calling Python API at: {}", apiUrl);
 
-        if (devices == null || devices.isEmpty()) {
-            return new Network();
-        }
+        try {
+            Map<String, List<Map<String, String>>> response = restTemplate.getForObject(apiUrl, Map.class);
+            List<Map<String, String>> devices = response.get("devices");
 
-        Network network;
-        Optional<Network> existingNetwork = networkRepo.findBySubnet(subnet);
-        if (existingNetwork.isPresent()) {
-            network = existingNetwork.get();
-            List<IpAddress> existingIps = ipRepo.findByNetworkId(network.getId());
-            for (IpAddress ip : existingIps) {
-                ipRepo.delete(ip);
+            if (devices == null || devices.isEmpty()) {
+                return new Network();
             }
-        } else {
-            network = new Network();
-            network.setSubnet(subnet);
-            network = networkRepo.save(network);
-        }
 
-        for (Map<String, String> device : devices) {
-            String ip = device.get("ip");
-            IpAddress newIp = new IpAddress();
-            newIp.setIp(ip);
-            newIp.setNetwork(network);
-            ipRepo.save(newIp);
+            Network network = networkRepo.findBySubnet(subnet)
+                    .orElseGet(() -> {
+                        Network newNetwork = new Network();
+                        newNetwork.setSubnet(subnet);
+                        return networkRepo.save(newNetwork);
+                    });
+
+            // Clear existing IPs
+            ipRepo.findByNetworkId(network.getId()).forEach(ipRepo::delete);
+
+            // Save new IPs
+            devices.stream()
+                    .map(device -> device.get("ip"))
+                    .forEach(ip -> {
+                        IpAddress newIp = new IpAddress();
+                        newIp.setIp(ip);
+                        newIp.setNetwork(network);
+                        ipRepo.save(newIp);
+                    });
+
+            return network;
+        } catch (RestClientException e) {
+            logger.error("Failed to call Python API: {}", e.getMessage());
+            throw new RuntimeException("Python API unavailable", e);
         }
-        return network;
     }
-
 
     @Async
     @Override
+    @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 1000))
     public CompletableFuture<String> fullScan(Long ipId) {
         Optional<IpAddress> ipOpt = ipRepo.findById(ipId);
         if (!ipOpt.isPresent()) {
             return CompletableFuture.completedFuture("404 Not Found");
         }
+
         IpAddress ipAddress = ipOpt.get();
         String ip = ipAddress.getIp();
 
-        String deviceInfoUrl = UriComponentsBuilder.fromHttpUrl("http://127.0.0.1:8000/device_scan")
+        String deviceInfoUrl = UriComponentsBuilder.fromHttpUrl(pythonApiBaseUrl + "/device_scan")
                 .queryParam("ip", ip)
                 .queryParam("mode", "popular")
                 .toUriString();
 
-        String extraInfo = restTemplate.getForObject(deviceInfoUrl, String.class);
+        logger.debug("Calling Python device scan at: {}", deviceInfoUrl);
 
-        DeviceInfo deviceInfo = new DeviceInfo();
-        deviceInfo.setIpAddress(ipAddress);
-        deviceInfo.setExtraInfo(extraInfo);
-        deviceRepo.save(deviceInfo);
+        try {
+            String extraInfo = restTemplate.getForObject(deviceInfoUrl, String.class);
 
-        return CompletableFuture.completedFuture("Full scan für IP: " + ip);
+            DeviceInfo deviceInfo = new DeviceInfo();
+            deviceInfo.setIpAddress(ipAddress);
+            deviceInfo.setExtraInfo(extraInfo);
+            deviceRepo.save(deviceInfo);
+
+            return CompletableFuture.completedFuture("Full scan completed for IP: " + ip);
+        } catch (RestClientException e) {
+            logger.error("Failed to call Python device scan: {}", e.getMessage());
+            return CompletableFuture.completedFuture("Failed to scan IP: " + ip);
+        }
     }
 
     @Override
@@ -112,16 +140,14 @@ public class ApiServiceImpl implements ApiService {
     public List<Network> getAllNetworks() {
         return networkRepo.findAll();
     }
+
+    @Override
     public Network updateNetworkName(Long networkId, String name) {
-        Optional<Network> networkOpt = networkRepo.findById(networkId);
-        if (networkOpt.isPresent()) {
-            Network network = networkOpt.get();
-            network.setName(name);
-            return networkRepo.save(network);
-        }
-        throw new RuntimeException("Network not found with id " + networkId);
+        return networkRepo.findById(networkId)
+                .map(network -> {
+                    network.setName(name);
+                    return networkRepo.save(network);
+                })
+                .orElseThrow(() -> new RuntimeException("Network not found with id " + networkId));
     }
-
-
-
 }

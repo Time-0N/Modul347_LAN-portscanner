@@ -23,7 +23,8 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "src",
+                "output": "."
               }
             ],
             "styles": [
@@ -56,6 +57,8 @@
           "defaultConfiguration": "production"
         },
         "serve": {
+          "options": {
+          },
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
