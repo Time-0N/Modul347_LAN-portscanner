@@ -20,14 +20,18 @@ services:
 
   api:
     build: ./PythonAPI
-    ports:
-      - "8081:8081"
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_ADMIN
+    privileged: true
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:8081/health || exit 0" ]
+      test: [ "CMD-SHELL", "curl -f http://localhost:8081/health || exit 1" ]
       interval: 15s
-      timeout: 10s
-      retries: 5
-      start_period: 30s
+      timeout: 2s
+      retries: 3
+      start_period: 5s
     depends_on:
       postgres:
         condition: service_healthy
@@ -37,6 +41,8 @@ services:
 
   backend:
     build: ./Backend
+    extra_hosts:
+      - "api:host-gateway"
     environment:
       SPRING_PROFILES_ACTIVE: dev
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/devdb

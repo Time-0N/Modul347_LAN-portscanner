@@ -13,15 +13,15 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.Duration;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Service
 public class ApiServiceImpl implements ApiService {
@@ -50,46 +50,45 @@ public class ApiServiceImpl implements ApiService {
 
     @Override
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 1000))
+    @Transactional
     public Network scanIps(String subnet) {
-        String apiUrl = UriComponentsBuilder.fromHttpUrl(pythonApiBaseUrl + "/scan")
+        String apiUrl = UriComponentsBuilder.fromHttpUrl(pythonApiBaseUrl)
+                .path("/scan")
                 .queryParam("subnet", subnet)
+                .encode()
                 .toUriString();
 
-        logger.debug("Calling Python API at: {}", apiUrl);
+        Map<String, List<Map<String, Object>>> response = restTemplate.getForObject(apiUrl, Map.class);
+        List<Map<String, Object>> devices = response.get("devices");
 
-        try {
-            Map<String, List<Map<String, String>>> response = restTemplate.getForObject(apiUrl, Map.class);
-            List<Map<String, String>> devices = response.get("devices");
-
-            if (devices == null || devices.isEmpty()) {
-                return new Network();
-            }
-
-            Network network = networkRepo.findBySubnet(subnet)
-                    .orElseGet(() -> {
-                        Network newNetwork = new Network();
-                        newNetwork.setSubnet(subnet);
-                        return networkRepo.save(newNetwork);
-                    });
-
-            // Clear existing IPs
-            ipRepo.findByNetworkId(network.getId()).forEach(ipRepo::delete);
-
-            // Save new IPs
-            devices.stream()
-                    .map(device -> device.get("ip"))
-                    .forEach(ip -> {
-                        IpAddress newIp = new IpAddress();
-                        newIp.setIp(ip);
-                        newIp.setNetwork(network);
-                        ipRepo.save(newIp);
-                    });
-
-            return network;
-        } catch (RestClientException e) {
-            logger.error("Failed to call Python API: {}", e.getMessage());
-            throw new RuntimeException("Python API unavailable", e);
+        if (devices == null || devices.isEmpty()) {
+            return new Network();
         }
+
+        Network network = networkRepo.findBySubnet(subnet)
+                .orElseGet(() -> {
+                    Network n = new Network();
+                    n.setSubnet(subnet);
+                    return networkRepo.save(n);
+                });
+
+        Optional<Network> existingNetwork = networkRepo.findBySubnet(subnet);
+        if (existingNetwork.isPresent()) {
+            network = existingNetwork.get();
+            List<IpAddress> existingIps = ipRepo.findByNetworkId(network.getId());
+            for (IpAddress ip : existingIps) {
+                ipRepo.delete(ip);
+            }
+        }
+
+        for (Map<String, Object> device : devices) {
+            String ip = device.get("ip").toString();
+            IpAddress newIp = new IpAddress();
+            newIp.setIp(ip);
+            newIp.setNetwork(network);
+            ipRepo.save(newIp);
+        }
+        return network;
     }
 
     @Async

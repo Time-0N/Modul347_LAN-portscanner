@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface IpAddressRepository extends JpaRepository<IpAddress, Long> {
     List<IpAddress> findByNetworkId(Long networkId);
+    void deleteByNetworkId(Long networkId);
 }

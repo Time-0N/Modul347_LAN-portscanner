@@ -6,10 +6,12 @@ import com.example.backend.model.Network;
 import com.example.backend.service.ApiService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api")
 public class ApiScanControllerImpl implements ApiScanController {
