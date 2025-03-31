@@ -1,9 +1,12 @@
 from fastapi import FastAPI, Query
 import socket
 import subprocess
+from fastapi import responses
 import nmap
 from scapy.all import ARP, Ether, srp
 from concurrent.futures import ThreadPoolExecutor
+from fastapi import FastAPI, HTTPException
+import socket
 
 app = FastAPI()
 
@@ -134,3 +137,25 @@ def device_scan(
         "open_ports": open_ports,
         "banners": banners
     }
+# ================== Healthcheck for DockerCompose ================== #
+@app.get("/health")
+async def health_check():
+    """Ultra-simple health check that only verifies host network access"""
+    try:
+        # Test basic network connectivity by creating a raw socket
+        with socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_ICMP) as s:
+            s.settimeout(1)
+            s.bind(('0.0.0.0', 0))  # Requires host network access
+        return {"status": "healthy", "network_access": True}
+    except PermissionError:
+        # Raw sockets require privileges
+        try:
+            # Fallback to regular socket test
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.settimeout(1)
+                s.bind(('0.0.0.0', 0))
+            return {"status": "healthy", "network_access": True}
+        except Exception as e:
+            raise HTTPException(status_code=503, detail=f"Network access failed: {str(e)}")
+    except Exception as e:
+        raise HTTPException(status_code=503, detail=f"Network access failed: {str(e)}")

@@ -1,9 +1,16 @@
 import {inject, Injectable} from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {groupBy, of, switchMap} from 'rxjs';
-import {NetworkScanService} from '../services/network-scan.service';
-import {OverviewService} from '../services/overview.service';
-import {networkResolverExecuted, loadNetworkSuccess, scanIp, scanIpSuccess, scanIpFailure} from './network.actions';
+import {NetworkScanService} from '../../services/network-scan.service';
+import {OverviewService} from '../../services/overview.service';
+import {
+  networkResolverExecuted,
+  loadNetworkSuccess,
+  scanIp,
+  scanIpSuccess,
+  scanIpFailure,
+  updateNetworkName, updateNetworkNameSuccess, updateNetworkNameFailure
+} from './network.actions';
 import {catchError, map, mergeMap} from 'rxjs/operators';
 
 @Injectable()
@@ -41,4 +48,20 @@ export class NetworkEffects {
       )
     )
   );
+
+  public readonly updateNetworkName$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateNetworkName),
+      mergeMap(({ network, name}) =>
+        this.overviewService.setNetworkName(network, name).pipe(
+          map(updatedNetwork =>
+            updateNetworkNameSuccess({ updatedNetwork })
+          ),
+          catchError(error =>
+            of(updateNetworkNameFailure({ error }))
+          )
+        )
+      )
+    )
+  )
 }

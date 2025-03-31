@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "ip_address")
 public class IpAddress {
@@ -14,6 +16,19 @@ public class IpAddress {
 
     @Column(unique = true, nullable = false)
     private String ip;
+
+    public List<Integer> getPorts() {
+        return ports;
+    }
+
+    public void setPorts(List<Integer> ports) {
+        this.ports = ports;
+    }
+
+    @ElementCollection
+    @CollectionTable(name = "ip_ports", joinColumns = @JoinColumn(name = "ip_id"))
+    @Column(name = "port")
+    private List<Integer> ports;
 
     @JsonBackReference
     @ManyToOne

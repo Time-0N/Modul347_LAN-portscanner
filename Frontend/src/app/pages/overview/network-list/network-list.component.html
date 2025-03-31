@@ -1,9 +1,19 @@
 <div *ngFor="let network of networks">
 
-  <div
-    (click)="toggleNetwork(network.id)"
-    >
-    {{ network.name }} ({{ network.subnet }})
+  <div>
+    <input
+            #nameInput
+            type="text"
+            [value]="network.name"
+            placeholder="Enter network name"
+    />
+    <button (click)="setOrUpdateNetworkName(network, nameInput.value)">
+      {{ network.name ? 'Update' : 'Set Name' }}
+    </button>
+  </div>
+
+  <div (click)="toggleNetwork(network.id)">
+    {{ network.name || 'undefined' }} ({{ network.subnet }})
   </div>
 
   <div *ngIf="expandedNetworkId === network.id">
@@ -26,6 +36,4 @@
       </ng-container>
     </div>
   </div>
-
-
 </div>

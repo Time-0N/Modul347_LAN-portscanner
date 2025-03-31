@@ -6,10 +6,12 @@ import com.example.backend.model.Network;
 import com.example.backend.service.ApiService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api")
 public class ApiScanControllerImpl implements ApiScanController {
@@ -38,13 +40,5 @@ public class ApiScanControllerImpl implements ApiScanController {
     @GetMapping("/device-info/{ipId}")
     public ResponseEntity<List<DeviceInfo>> getDeviceInfo(@PathVariable Long ipId) {
         return ResponseEntity.ok(apiService.getDeviceInfoForIp(ipId));
-    }
-
-    // Neuer Endpunkt zum Setzen des Namens ohne DTO
-    @PostMapping("/network/{networkId}/name")
-    public ResponseEntity<Network> updateNetworkName(@PathVariable Long networkId,
-                                                     @RequestParam String name) {
-        Network updatedNetwork = apiService.updateNetworkName(networkId, name);
-        return ResponseEntity.ok(updatedNetwork);
     }
 }

@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { Network } from '../../../models/network';
+import { Network } from '../../../../models/network';
 
 const actionName = '[network]';
 
@@ -27,4 +27,20 @@ export const scanIpFailure =
   createAction(`${actionName} scan IP failure`, props< {
     error: any
   }>()
+);
+
+export const updateNetworkName =
+    createAction(`${actionName} Update Network Name`, props<{
+        network: Network, name: string
+    }>()
+);
+
+export const updateNetworkNameSuccess = createAction(
+    `${actionName} Update Network Name Success`,
+    props<{ updatedNetwork: Network }>()
+);
+
+export const updateNetworkNameFailure = createAction(
+    `${actionName} Update Network Name Failure`,
+    props<{ error: any }>()
 );
