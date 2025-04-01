@@ -12,12 +12,9 @@ import java.util.concurrent.CompletableFuture;
 
 public interface ApiScanController {
 	ResponseEntity<Network> scanIps(@RequestParam String subnet);
-
 	ResponseEntity<CompletableFuture<String>> fullScan(@PathVariable Long ipId);
-
 	ResponseEntity<List<IpAddress>> listAllIps();
-
 	ResponseEntity<List<DeviceInfo>> getDeviceInfo(@PathVariable Long ipId);
 
-
+	ResponseEntity<Void> deleteNetworkById(@PathVariable Long networkId);  // DELETE Endpunkt
 }

@@ -18,10 +18,10 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.time.Duration;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 @Service
 public class ApiServiceImpl implements ApiService {
@@ -144,5 +144,13 @@ public class ApiServiceImpl implements ApiService {
                     return networkRepo.save(network);
                 })
                 .orElseThrow(() -> new RuntimeException("Network not found with id " + networkId));
+    }
+
+    @Override
+    @Transactional
+    public void deleteNetworkById(Long networkId) {
+        Network network = networkRepo.findById(networkId)
+                .orElseThrow(() -> new RuntimeException("Network not found with id " + networkId));
+        networkRepo.delete(network);
     }
 }

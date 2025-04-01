@@ -6,7 +6,6 @@ import com.example.backend.model.Network;
 import com.example.backend.service.ApiService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -22,23 +21,34 @@ public class ApiScanControllerImpl implements ApiScanController {
         this.apiService = apiService;
     }
 
+    @Override
     @GetMapping("/scan-ips")
     public ResponseEntity<Network> scanIps(@RequestParam String subnet) {
         return ResponseEntity.ok(apiService.scanIps(subnet));
     }
 
+    @Override
     @GetMapping("/full-scan/{ipId}")
     public ResponseEntity<CompletableFuture<String>> fullScan(@PathVariable Long ipId) {
         return ResponseEntity.ok(apiService.fullScan(ipId));
     }
 
+    @Override
     @GetMapping("/list-ips")
     public ResponseEntity<List<IpAddress>> listAllIps() {
         return ResponseEntity.ok(apiService.listAllIps());
     }
 
+    @Override
     @GetMapping("/device-info/{ipId}")
     public ResponseEntity<List<DeviceInfo>> getDeviceInfo(@PathVariable Long ipId) {
         return ResponseEntity.ok(apiService.getDeviceInfoForIp(ipId));
+    }
+
+    @Override
+    @DeleteMapping("/network/{networkId}")
+    public ResponseEntity<Void> deleteNetworkById(@PathVariable Long networkId) {
+        apiService.deleteNetworkById(networkId);
+        return ResponseEntity.noContent().build();
     }
 }

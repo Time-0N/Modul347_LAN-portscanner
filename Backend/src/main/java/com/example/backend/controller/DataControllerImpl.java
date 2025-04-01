@@ -30,10 +30,15 @@ public class DataControllerImpl implements DataController {
     public ResponseEntity<Network> updateNetworkName(
             @PathVariable Long networkId,
             @RequestBody Map<String, String> request
-            ) {
+    ) {
         String name = request.get("name");
         Network updatedNetwork = apiService.updateNetworkName(networkId, name);
         return ResponseEntity.ok(updatedNetwork);
     }
-}
 
+    @Override
+    @PutMapping("/network/{networkId}")
+    public ResponseEntity<Network> updateNetwork(@PathVariable Long networkId, @RequestBody Map<String, String> request) {
+        return ResponseEntity.ok(new Network());
+    }
+}
