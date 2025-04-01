@@ -58,35 +58,31 @@ public class ApiServiceImpl implements ApiService {
                 .encode()
                 .toUriString();
 
-        Map<String, List<Map<String, Object>>> response = restTemplate.getForObject(apiUrl, Map.class);
-        List<Map<String, Object>> devices = response.get("devices");
+        Map<String, List<Map<String, String>>> response = restTemplate.getForObject(apiUrl, Map.class);
+        List<Map<String, String>> devices = response.get("devices");
 
         if (devices == null || devices.isEmpty()) {
             return new Network();
         }
 
-        Network network = networkRepo.findBySubnet(subnet)
-                .orElseGet(() -> {
-                    Network n = new Network();
-                    n.setSubnet(subnet);
-                    return networkRepo.save(n);
-                });
+        Network network = networkRepo.findBySubnet(subnet).orElseGet(() -> {
+            Network newNetwork = new Network();
+            newNetwork.setSubnet(subnet);
+            return networkRepo.save(newNetwork);
+        });
 
-        Optional<Network> existingNetwork = networkRepo.findBySubnet(subnet);
-        if (existingNetwork.isPresent()) {
-            network = existingNetwork.get();
-            List<IpAddress> existingIps = ipRepo.findByNetworkId(network.getId());
-            for (IpAddress ip : existingIps) {
-                ipRepo.delete(ip);
-            }
-        }
-
-        for (Map<String, Object> device : devices) {
-            String ip = device.get("ip").toString();
-            IpAddress newIp = new IpAddress();
-            newIp.setIp(ip);
-            newIp.setNetwork(network);
-            ipRepo.save(newIp);
+        for (Map<String, String> device : devices) {
+            String ip = device.get("ip");
+            IpAddress ipAddress = ipRepo.findByNetworkId(network.getId()).stream()
+                    .filter(i -> i.getIp().equals(ip))
+                    .findFirst()
+                    .orElseGet(() -> {
+                        IpAddress newIp = new IpAddress();
+                        newIp.setIp(ip);
+                        newIp.setNetwork(network);
+                        network.getIpAddresses().add(newIp);
+                        return ipRepo.save(newIp);
+                    });
         }
         return network;
     }
