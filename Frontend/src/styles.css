@@ -1,1 +1,95 @@
-/* You can add global styles to this file, and also import other style files */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+button {
+  padding: 0.5rem 1rem;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.network-name  {
+  padding: 0.5rem 1rem;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f7fb;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.scan-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 800px;
+  height: 100%;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.scan-control, .search-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+label {
+  font-size: 14px;
+  color: #555;
+}
+
+input[type="text"] {
+  padding: 0.75rem;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-width: 200px;
+  transition: border 0.3s;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: #2196f3;
+}
+
+
+
+.network-list-container {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 1rem;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: 1rem;
+  background-color: #fafafa;
+}
+
+input::placeholder{
+  color: #aaa;
+  font-style: italic;
+}

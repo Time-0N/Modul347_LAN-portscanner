@@ -1,11 +1,12 @@
-<div *ngFor="let network of networks" id="network-{{network.id}}" class="network-item">
+<div *ngFor="let network of networks">
 
-  <div id="network-name-{{network.id}}" class="network-name">
+  <div>
     <input
-      #nameInput
-      type="text"
-      [value]="network.name"
-      placeholder="Enter network name"
+            #nameInput
+            type="text"
+            [value]="network.name"
+            placeholder="Enter network name"
+            class="search-control"
     />
     <button (click)="setOrUpdateNetworkName(network, nameInput.value)">
       {{ network.name ? 'Update' : 'Set Name' }}
@@ -18,23 +19,21 @@
     </button>
   </div>
 
-  <div id="network-toggle-{{network.id}}" class="network-toggle" (click)="toggleNetwork(network.id)">
-    <span class="network-name-label">{{ network.name || 'undefined' }} </span>
-    <span class="network-subnet">({{ network.subnet }})</span>
+  <div (click)="toggleNetwork(network.id)">
+    {{ network.name || 'undefined' }} ({{ network.subnet }})
   </div>
 
-  <div *ngIf="expandedNetworkId === network.id" id="network-details-{{network.id}}" class="network-details">
+  <div class="expanded-network" *ngIf="expandedNetworkId === network.id">
     <div
       *ngFor="let ip of network.ipAddresses"
-      id="ip-item-{{ip.ip}}" class="ip-item"
       (click)="toggleIp(ip.ip)"
-    >
-      <span>- {{ ip.ip }}</span>
+      >
+      - {{ ip.ip }}
     </div>
 
-    <div *ngFor="let ip of network.ipAddresses" id="ip-details-container-{{ip.ip}}" class="ip-details">
+    <div *ngFor="let ip of network.ipAddresses">
       <ng-container *ngIf="expandedIp === ip.ip">
-        <div id="ip-info-{{ip.ip}}" class="ip-info">
+        <div>
           <div><strong>IP:</strong> {{ ip.ip }}</div>
           <div><strong>MAC:</strong> {{ ip.deviceInfo.mac }}</div>
           <div><strong>Hostname:</strong> {{ ip.deviceInfo.hostname }}</div>

@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: devuser
+      POSTGRES_PASSWORD: devpass
+      POSTGRES_DB: devdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devuser -d devdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  api:
+    image: t1me0n/lan-api:latest
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_ADMIN
+    privileged: true
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8081/health || exit 1" ]
+      interval: 15s
+      timeout: 2s
+      retries: 3
+      start_period: 5s
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PORT: 8081
+      PYTHONUNBUFFERED: 1
+
+  backend:
+    image: t1me0n/lan-backend:latest
+    extra_hosts:
+      - "api:host-gateway"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/devdb
+      SPRING_DATASOURCE_USERNAME: devuser
+      SPRING_DATASOURCE_PASSWORD: devpass
+      PYTHON_API_BASE_URL: "http://api:8081"
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      postgres:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+
+  frontend:
+    image: t1me0n/lan-frontend:latest
+    ports:
+      - "4200:4200"
+    depends_on:
+      backend:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:4200 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  pgdata:
+    name: lan-scanner-pgdata
