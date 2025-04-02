@@ -44,3 +44,15 @@ export const updateNetworkNameFailure = createAction(
     `${actionName} Update Network Name Failure`,
     props<{ error: any }>()
 );
+
+export const rescanNetwork =
+  createAction(`${actionName} rescan Network`, props<{
+    networkId: number
+  }>()
+);
+
+export const rescanNetworkSuccess =
+  createAction(`${actionName} rescan Network Success`, props<{
+    updatedNetwork: Network
+  }>()
+);

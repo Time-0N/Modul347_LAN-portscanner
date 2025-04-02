@@ -12,6 +12,12 @@
     </button>
   </div>
 
+  <div id="network-rescan-{{network.id}}" class="network-rescan">
+    <button (click)="onSubmitRescanNetwork(network.id)">
+      Rescan
+    </button>
+  </div>
+
   <div id="network-toggle-{{network.id}}" class="network-toggle" (click)="toggleNetwork(network.id)">
     <span class="network-name-label">{{ network.name || 'undefined' }} </span>
     <span class="network-subnet">({{ network.subnet }})</span>

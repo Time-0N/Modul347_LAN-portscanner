@@ -18,4 +18,9 @@ export class NetworkScanService {
       params: { subnet: ip }
     });
   }
+
+  rescanNetwork(networkId: number): Observable<Network> {
+    return this.http.put<Network>(`${this.api}/network/${networkId}`, {
+    });
+  }
 }

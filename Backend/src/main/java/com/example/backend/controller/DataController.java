@@ -12,5 +12,7 @@ public interface DataController {
     ResponseEntity<List<Network>> getStoredNetworks();
     ResponseEntity<Network> updateNetworkName(Long networkId, Map<String, String> request);
 
-    ResponseEntity<Network> updateNetwork(@PathVariable Long networkId, @RequestBody Map<String, String> request);
+    ResponseEntity<Network> rescanNetwork(@PathVariable Long networkId);
+
+    ResponseEntity<Void> deleteNetworkById(@PathVariable Long networkId);
 }

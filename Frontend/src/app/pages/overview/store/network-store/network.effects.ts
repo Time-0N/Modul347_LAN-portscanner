@@ -9,7 +9,7 @@ import {
   scanIp,
   scanIpSuccess,
   scanIpFailure,
-  updateNetworkName, updateNetworkNameSuccess, updateNetworkNameFailure
+  updateNetworkName, updateNetworkNameSuccess, updateNetworkNameFailure, rescanNetwork, rescanNetworkSuccess
 } from './network.actions';
 import {catchError, map, mergeMap} from 'rxjs/operators';
 
@@ -63,5 +63,18 @@ export class NetworkEffects {
         )
       )
     )
-  )
+  );
+
+  public readonly rescanNetwork$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(rescanNetwork),
+      mergeMap((action) =>
+        this.networkScanService.rescanNetwork(action.networkId).pipe(
+          map(updatedNetwork =>
+            rescanNetworkSuccess({ updatedNetwork: updatedNetwork })
+          )
+        )
+      )
+    )
+  );
 }

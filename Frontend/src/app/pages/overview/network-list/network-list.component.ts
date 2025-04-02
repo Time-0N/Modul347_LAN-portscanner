@@ -4,7 +4,7 @@ import {Network} from '../../../models/network';
 import {FormsModule} from '@angular/forms';
 import {OverviewService} from '../services/overview.service';
 import {Store} from "@ngrx/store";
-import {updateNetworkName} from "../store/network-store/network.actions";
+import {rescanNetwork, updateNetworkName} from "../store/network-store/network.actions";
 
 @Component({
   selector: 'app-network-list',
@@ -43,5 +43,11 @@ export class NetworkListComponent {
         name: newName
       }))
     }
+  }
+
+  onSubmitRescanNetwork(networkId: number) {
+    this.store.dispatch(rescanNetwork({
+      networkId
+    }))
   }
 }

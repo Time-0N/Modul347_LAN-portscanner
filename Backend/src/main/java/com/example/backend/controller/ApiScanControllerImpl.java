@@ -44,11 +44,4 @@ public class ApiScanControllerImpl implements ApiScanController {
     public ResponseEntity<List<DeviceInfo>> getDeviceInfo(@PathVariable Long ipId) {
         return ResponseEntity.ok(apiService.getDeviceInfoForIp(ipId));
     }
-
-    @Override
-    @DeleteMapping("/network/{networkId}")
-    public ResponseEntity<Void> deleteNetworkById(@PathVariable Long networkId) {
-        apiService.deleteNetworkById(networkId);
-        return ResponseEntity.noContent().build();
-    }
 }

@@ -15,6 +15,4 @@ public interface ApiScanController {
 	ResponseEntity<CompletableFuture<String>> fullScan(@PathVariable Long ipId);
 	ResponseEntity<List<IpAddress>> listAllIps();
 	ResponseEntity<List<DeviceInfo>> getDeviceInfo(@PathVariable Long ipId);
-
-	ResponseEntity<Void> deleteNetworkById(@PathVariable Long networkId);  // DELETE Endpunkt
 }
