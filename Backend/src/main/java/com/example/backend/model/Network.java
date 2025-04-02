@@ -2,6 +2,8 @@ package com.example.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,9 +21,12 @@ public class Network {
     private String name;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "network", cascade = CascadeType.ALL)
-    private List<IpAddress> ipAddresses;
+    @OneToMany(mappedBy = "network", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<IpAddress> ipAddresses = new ArrayList<>();
 
+    public List<IpAddress> getIpAddresses() {
+        return ipAddresses;
+    }
 
     public Long getId() {
         return id;

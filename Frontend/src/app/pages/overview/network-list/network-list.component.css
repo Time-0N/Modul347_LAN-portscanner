@@ -1,0 +1,143 @@
+/* Grundlegende Stile für die Seite */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f5f5f5;
+  color: #333;
+  padding: 1rem;
+}
+
+/* Stil für jedes Netzwerk-Element */
+.network-item {
+  background-color: white;
+  margin: 1rem 0;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.network-item:hover {
+  transform: scale(1.03);
+}
+
+/* Styling für den Netzwerknamen */
+.network-name {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.network-name input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-width: 150px;
+}
+
+.network-name button {
+  padding: 0.5rem 1rem;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.network-name button:hover {
+  background-color: #1976d2;
+}
+
+/* Stil für die Netzwerkauswahl */
+.network-toggle {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 0.75rem;
+  background-color: #f0f0f0;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.network-toggle:hover {
+  background-color: #e3e3e3;
+}
+
+.network-name-label {
+  font-weight: bold;
+}
+
+.network-subnet {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Stil für die ausgeklappte Netzwerkinformation */
+.network-details {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  z-index: 1; /* Setzt den Z-Index, um es vor anderen Elementen anzuzeigen */
+}
+
+.network-details.active {
+  max-height: 1000px;
+  opacity: 1;
+  z-index: 2; /* Z-Index erhöhen, um es vor anderen Inhalten sichtbar zu machen */
+}
+
+/* IP-Elemente */
+.ip-item {
+  padding: 0.5rem;
+  cursor: pointer;
+  background-color: #e9ecef;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.ip-item:hover {
+  background-color: #d6d8db;
+}
+
+/* IP-Details */
+.ip-details {
+  display: none;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background-color: #f1f1f1;
+  border-radius: 4px;
+}
+
+.ip-item:hover + .ip-details {
+  display: block;
+}
+
+.ip-info {
+  background-color: #ffffff;
+  padding: 1rem;
+  margin-top: 0.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ip-info div {
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+.ip-info strong {
+  color: #2196f3;
+}
