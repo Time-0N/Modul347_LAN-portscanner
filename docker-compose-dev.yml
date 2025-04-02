@@ -51,6 +51,7 @@ services:
       PYTHON_API_BASE_URL: "http://api:8081"
     ports:
       - "8080:8080"
+      - "5005:5005"
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
       interval: 15s
