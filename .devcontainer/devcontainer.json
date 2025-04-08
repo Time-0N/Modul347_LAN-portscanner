@@ -1,0 +1,24 @@
+{
+  "name": "LAN Scanner DevContainer",
+  "dockerComposeFile": ["../docker-compose.yml", "docker-compose.override.yml"],
+  "service": "dev",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  "forwardPorts": [5432, 8080, 8081, 4200, 5005],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "vscjava.vscode-java-pack",
+        "angular.ng-template",
+        "ms-azuretools.vscode-docker",
+        "editorconfig.editorconfig"
+      ],
+      "settings": {
+        "java.debug.settings.hotCodeReplace": "auto",
+        "docker.showStartContextMenu": true
+      }
+    }
+  },
+  "remoteUser": "vscode"
+}

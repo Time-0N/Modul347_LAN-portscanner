@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  dev:
+    image: mcr.microsoft.com/vscode/devcontainers/base:0-ubuntu-22.04
+    volumes:
+      - ..:/workspace:cached
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: sleep infinity
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      postgres:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+
+  api:
+    network_mode: bridge
+    volumes:
+      - ../PythonAPI:/app
+    cap_add: []
+    privileged: false
+
+  backend:
+    volumes:
+      - ../Backend:/app
+
+  frontend:
+    volumes:
+      - ../Frontend:/app
